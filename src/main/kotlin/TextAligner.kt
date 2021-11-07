@@ -1,3 +1,5 @@
+import java.util.*
+
 /**
  * Enum class of types of alignments
  */
@@ -8,7 +10,7 @@ enum class Alignment {
 	JUSTIFIED
 }
 
-class TextAlignerLab1(var text: String) {
+class TextAligner(private val text: String) {
 	/**
 	 * Aligns string [str] to the right and makes the
 	 * result [lineLength] characters long
@@ -19,14 +21,14 @@ class TextAlignerLab1(var text: String) {
 		else
 			str
 	}
-
+	
 	/**
 	 * Aligns string [str] to the center and makes the
 	 * result [lineLength] characters long
 	 */
 	private fun alignCenter(str: String, lineLength: Int): String {
 		var result = ""
-
+		
 		if (str.length < lineLength) {
 			val spaces = "".padEnd((lineLength - str.length) / 2, ' ')
 			result += spaces + str + spaces
@@ -36,7 +38,7 @@ class TextAlignerLab1(var text: String) {
 			result = str
 		return result
 	}
-
+	
 	/**
 	 * 'Justifies' string [str] and makes the
 	 * result [lineLength] characters long
@@ -44,7 +46,7 @@ class TextAlignerLab1(var text: String) {
 	private fun alignJustified(str: String, lineLength: Int): String {
 		val result = StringBuilder(str)
 		if (str.length < lineLength) {
-
+			
 			val spacesIndices = mutableListOf(0)
 			var curIndex = 0
 			while (curIndex != -1) {
@@ -52,23 +54,19 @@ class TextAlignerLab1(var text: String) {
 				spacesIndices += curIndex
 			}
 			if (spacesIndices.size > 1) {
-				spacesIndices.removeAt(0)
-				spacesIndices.removeAt(spacesIndices.lastIndex)
-
+				spacesIndices.removeAt(0) // Removing first because index 0 is no longer relevant
+				spacesIndices.removeAt(spacesIndices.lastIndex) // Deleting the last element which is always -1
+				
 				val spacesCount = spacesIndices.size
 				val extraSpaces = lineLength - str.length
 				val spacesPerEmpty: Int = extraSpaces / spacesCount
 				val spaces = "".padEnd(spacesPerEmpty)
-
-				for (i in spacesIndices.indices) {
-					result.insert(spacesIndices[i] + result.length - str.length, spaces)
-					spacesIndices[i] += result.length - str.length
+				
+				for (i in spacesIndices.indices.reversed()) {
+					result.insert(spacesIndices[i], spaces)
+					spacesIndices[i] += (spacesPerEmpty + 1) * i
 				}
-
-				while (result.length > lineLength) {
-					result.deleteAt(spacesIndices.last())
-					spacesIndices.removeAt(spacesIndices.lastIndex)
-				}
+				
 				while (result.length < lineLength) {
 					result.insert(spacesIndices.first(), ' ')
 					spacesIndices.removeAt(0)
@@ -77,7 +75,7 @@ class TextAlignerLab1(var text: String) {
 		}
 		return result.toString()
 	}
-
+	
 	/**
 	 * Aligns string [str], according to alignment
 	 * parameter [alignment] to length of [lineLength] characters
@@ -90,23 +88,26 @@ class TextAlignerLab1(var text: String) {
 			else -> str
 		}
 	}
-
+	
 	/**
 	 * Aligns each string of [text], according to alignment
 	 * parameter [alignment] to length of [lineLength] characters
 	 */
-	fun alignText(lineLength: Int, alignment: Alignment): Void? {
+	fun alignText(lineLength: Int, alignment: Alignment): String {
+		if (lineLength <= 0)
+			throw InputMismatchException("No such thing as a line with length less than or equal to zero!")
+		
 		var finStr = "" // String that we will return at the end of the function
 		var tempStr = "" // Buffer string to create strings of length 'lineLength'
-
+		
 		var wordStart = 0 // Starting index of a word in a string
 		var isWord = false // Indicates whether the iterator is inside a word
 		var hasSpaces = false // Indicates whether the string is just one big word or a collection of words
 		var spacesCounter = false // Keeps track of if we have too many spaces in between sentences
-
+		
 		// Going through the initial text in this loop
 		for (i in 0 until text.length - 1) {
-
+			
 			// If character is a new line symbol
 			if (text[i] == '\n' && tempStr.isNotEmpty()) {
 				if (text[i + 1] != '\n') {
@@ -134,7 +135,7 @@ class TextAlignerLab1(var text: String) {
 				tempStr += text[i]
 				spacesCounter = false
 			}
-
+			
 			if (tempStr.isNotEmpty()) {
 				// If the buffer string is not empty, process it
 				if (tempStr.last() == ' ' || tempStr.last() == '\n') {
@@ -149,20 +150,21 @@ class TextAlignerLab1(var text: String) {
 					isWord = true
 					wordStart = tempStr.lastIndex
 				}
-
+				
 				if (tempStr.length == lineLength || i == text.length - 2) {
 					// If the buffer string is full, or we've reached the end of
 					// input text, decide how to deal with the buffer string
 					val len = tempStr.length // Length of the string (creating a value for readability reasons)
-
+					
 					if (finStr.isNotEmpty())
 						finStr += '\n' // Adding a new line symbol if the final string is not empty
-
+					
 					var res = ""
 					if (text[i + 1].isLetterOrDigitOrPM() && tempStr.last().isLetterOrDigit() && hasSpaces) {
 						// If the last word in the string does not fit, discard it
 						res += tempStr.dropLast(len - wordStart + 1) // Add the 'good' part of the string
-						tempStr = tempStr.substring(wordStart, len) // Leave the discarded part in the buffer string for later
+						tempStr =
+							tempStr.substring(wordStart, len) // Leave the discarded part in the buffer string for later
 					} else {
 						// Otherwise, we're clear to add the string to the final string
 						if (tempStr.last() == ' ')
@@ -170,7 +172,7 @@ class TextAlignerLab1(var text: String) {
 						res += tempStr // Adding the result to the final string
 						tempStr = "" // Clearing the buffer string
 					}
-
+					
 					res = alignStr(res, lineLength, alignment)
 					finStr += res
 					// Reassigning to false since we're about to begin making a new string
@@ -180,7 +182,6 @@ class TextAlignerLab1(var text: String) {
 				}
 			}
 		}
-		text = finStr
-		return null
+		return finStr
 	}
 }
