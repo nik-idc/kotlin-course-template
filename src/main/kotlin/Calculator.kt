@@ -1,4 +1,5 @@
 import java.util.*
+import kotlin.IllegalArgumentException
 import kotlin.math.*
 
 class Calculator {
@@ -20,7 +21,7 @@ class Calculator {
 	 */
 	fun calculate(input: String): Double {
 		if (input.isEmpty())
-			throw InputMismatchException("Empty string!")
+			throw IllegalArgumentException("Empty string!")
 		
 		val tokens = inputStringIntoTokens(input)
 		return if (tokens.size > 1) {
@@ -40,7 +41,7 @@ class Calculator {
 		var bracketsBalance = 0
 		var prevChar = PrChar.NOTHING // No previous characters yet
 		var i = 0 // Input string iterator
-		while (i < input.length) {
+		while (i < input.length) { // The big checking loop
 			if (input[i].isDigit()) { // Add the number token to the token queue
 				if (prevChar == PrChar.CLOSED_BRACKET)
 					infixTokens.add("*") // Change ..(..)digit to ..(..)*digit
@@ -51,7 +52,7 @@ class Calculator {
 				if (numToken.isNumber()) // Check if number format is correct
 					infixTokens.add(numToken)
 				else
-					throw InputMismatchException("Invalid number at character $i!")
+					throw IllegalArgumentException("Invalid number at character $i!")
 				
 				prevChar = PrChar.NUMBER // Set the previous character to be numeric
 				i += numToken.length // Iterate through the string
@@ -79,13 +80,13 @@ class Calculator {
 					}
 					PrChar.NUMBER // Set the previous character to be numeric
 				} else // Otherwise, tell user they did a stupid
-					throw InputMismatchException("Invalid symbolic string at character $i!")
+					throw IllegalArgumentException("Invalid symbolic string at character $i!")
 			} else if (input[i].isOperator()) { // Add an operator to the tokens queue
 				// Check for all possible errors
-				if ((i == 0 && input[i] != '-') || i == input.lastIndex || prevChar == PrChar.OPERATOR)
-					throw InputMismatchException("Operator error at character $i!")
+				if ((i == 0 && input[i] != '-' && input[i] != '+') || i == input.lastIndex || prevChar == PrChar.OPERATOR)
+					throw IllegalArgumentException("Operator error at character $i!")
 				
-				if (input[i] == '-' && (prevChar == PrChar.OPEN_BRACKET || i == 0))
+				if ((input[i] == '-' || input[i] == '+') && (prevChar == PrChar.OPEN_BRACKET || i == 0))
 					infixTokens.add("0") // Change ...(-number.../-number... to ...(0-number.../0-number...
 				infixTokens.add(input[i].toString())
 				
@@ -93,19 +94,17 @@ class Calculator {
 				i++ // Iterate through the string
 			} else if (input[i] == '(') { // do stuff with the opening bracket
 				if (prevChar == PrChar.CLOSED_BRACKET)
-					throw InputMismatchException("Opening bracket followed by a closing bracket at character $i!")
+					throw IllegalArgumentException("Opening bracket followed by a closing bracket at character $i!")
 				
 				infixTokens.add("(")
-				//s.push('(')
 				bracketsBalance++
 				
 				prevChar = PrChar.OPEN_BRACKET // Set the previous character to an open bracket
 				i++ // Iterate through the string
 			} else if (input[i] == ')') { // do stuff with the closing bracket
 				if (bracketsBalance == 0 || prevChar == PrChar.OPEN_BRACKET || prevChar == PrChar.OPERATOR || prevChar == PrChar.SYMBOL)
-					throw InputMismatchException("Opening bracket error at character $i!")
+					throw IllegalArgumentException("Opening bracket error at character $i!")
 				else
-				//s.pop()
 					bracketsBalance--
 				infixTokens.add(")")
 				prevChar = PrChar.CLOSED_BRACKET // Set the previous character to a closed bracket
@@ -113,11 +112,11 @@ class Calculator {
 			} else if (input[i] == ' ')
 				i++ // Iterate through the string
 			else
-				throw InputMismatchException("Unrecognised symbol at character $i!")
+				throw IllegalArgumentException("Unrecognised symbol at character $i!")
 		}
 		
 		if (bracketsBalance != 0) // Check if brackets are balanced
-			throw InputMismatchException("Unbalanced brackets!")
+			throw IllegalArgumentException("Unbalanced brackets!")
 		
 		//return infixTokens.toList()
 		return infixTokens
@@ -135,13 +134,40 @@ class Calculator {
 		}
 	}
 	
+	private fun processClosingBracketToPostfix(s: MutableList<String>, postfix: MutableList<String>) {
+		// Add the top element of the stack to the postfix string until stack
+		// is empty or top element of the stack is an opening bracket
+		while (s.last() != "(")
+			postfix.add(s.removeLast())
+		s.removeLast() // Remove opening bracket
+		// If there is a function in the expression, add it to postfix string
+		if (s.isNotEmpty() && s.last().isMathFunction())
+			postfix.add(s.removeLast())
+	}
+	
+	private fun processOperatorToPostfix(s: MutableList<String>, postfix: MutableList<String>, curToken: String) {
+		if (s.isEmpty()) // If stack is empty, just add the token to it
+			s.add(curToken)
+		else { // Otherwise, if stack is not empty
+			if (precedence(curToken) > precedence(s.last()))
+				s.add(curToken)
+			else if (precedence(curToken) == precedence(s.last()) && curToken == "^")
+				s.add(curToken)
+			else {
+				while (s.isNotEmpty() && precedence(curToken) <= precedence(s.last()))
+					postfix.add(s.removeLast())
+				s.add(curToken)
+			}
+		}
+	}
+	
 	/**
 	 * Convert infix to postfix notation
 	 */
 	fun infixToPostfix(infix: List<String>): List<String> {
 		val postfix: MutableList<String> = mutableListOf()
 		val s: MutableList<String> =
-			mutableListOf() // List (will be used and referred to as stack) to keep track of operators, brackets and functions
+				mutableListOf() // List (will be used and referred to as stack) to keep track of operators, brackets and functions
 		
 		for (i in infix.indices) {
 			if (infix[i].isNumber()) // If current token is a number, just add it to the postfix
@@ -149,28 +175,9 @@ class Calculator {
 			else if (infix[i] == "(") // If opening bracket, push it onto stack
 				s.add(infix[i])
 			else if (infix[i] == ")") { // If closing bracket
-				// Add the top element of the stack to the postfix string until stack
-				// is empty or top element of the stack is an opening bracket
-				while (s.last() != "(")
-					postfix.add(s.removeLast())
-				s.removeLast() // Remove opening bracket
-				// If there is a function in the expression, add it to postfix string
-				if (s.isNotEmpty() && s.last().isMathFunction())
-					postfix.add(s.removeLast())
+				processClosingBracketToPostfix(s, postfix)
 			} else if (infix[i].isOperator()) { // If current token is operator
-				if (s.isEmpty()) // If stack is empty, just add the token to it
-					s.add(infix[i])
-				else { // Otherwise, if stack is not empty
-					if (precedence(infix[i]) > precedence(s.last()))
-						s.add(infix[i])
-					else if (precedence(infix[i]) == precedence(s.last()) && infix[i] == "^")
-						s.add(infix[i])
-					else {
-						while (s.isNotEmpty() && precedence(infix[i]) <= precedence(s.last()))
-							postfix.add(s.removeLast())
-						s.add(infix[i])
-					}
-				}
+				processOperatorToPostfix(s, postfix, infix[i])
 			} else if (infix[i].isMathFunction()) {
 				s.add(infix[i]) // Add math function to the stack
 			}
@@ -191,8 +198,8 @@ class Calculator {
 		
 		if (operator == "/" && right == 0.0)
 			throw InputMismatchException(
-				"Attempted division by zero!" +
-						"\nPlease take a look at supported patterns of input again!"
+					"Attempted division by zero!" +
+							"\nPlease take a look at supported patterns of input again!"
 			)
 		
 		return when (operator) {
@@ -213,8 +220,8 @@ class Calculator {
 		
 		if ((funcStr == "log" || funcStr == "log") && num <= 0 || funcStr == "tan" && num % 90 == 0.0)
 			throw InputMismatchException(
-				"At least one of the functions in your expression has invalid input!" +
-						"\nPlease take a look at supported patterns of input again!"
+					"At least one of the functions in your expression has invalid input!" +
+							"\nPlease take a look at supported patterns of input again!"
 			)
 		
 		return when (funcStr) {
@@ -230,10 +237,10 @@ class Calculator {
 	/**
 	 * Evaluate postfix expression
 	 */
-	fun eval(postfix: List<String>): Double {
+	private fun eval(postfix: List<String>): Double {
 		var operationResult: Double?
 		val calc: MutableList<String> =
-			mutableListOf() // List (will be used and referred to as stack) for calculating the result
+				mutableListOf() // List (will be used and referred to as stack) for calculating the result
 		
 		for (i in postfix.indices) {
 			if (postfix[i].isNumber()) {
