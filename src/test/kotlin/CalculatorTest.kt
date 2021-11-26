@@ -1,6 +1,5 @@
 import org.junit.Test
 import org.junit.Assert
-import java.util.*
 import kotlin.math.*
 
 /**
@@ -25,7 +24,7 @@ class CalculatorTest {
 			caught = try {
 				calculator.inputStringIntoTokens(testStrings[i])
 				false
-			} catch (exc: InputMismatchException) {
+			} catch (exc: IllegalArgumentException) {
 				true
 			}
 			Assert.assertEquals(true, caught)
