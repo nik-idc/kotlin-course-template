@@ -134,6 +134,9 @@ class Calculator {
 		}
 	}
 	
+	/**
+	 * Process closing bracket when converting from infix to prefix
+	 */
 	private fun processClosingBracketToPostfix(s: MutableList<String>, postfix: MutableList<String>) {
 		// Add the top element of the stack to the postfix string until stack
 		// is empty or top element of the stack is an opening bracket
@@ -145,6 +148,9 @@ class Calculator {
 			postfix.add(s.removeLast())
 	}
 	
+	/**
+	 * Process operator when converting from infix to prefix
+	 */
 	private fun processOperatorToPostfix(s: MutableList<String>, postfix: MutableList<String>, curToken: String) {
 		if (s.isEmpty()) // If stack is empty, just add the token to it
 			s.add(curToken)
