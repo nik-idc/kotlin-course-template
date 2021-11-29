@@ -11,7 +11,7 @@ class ShapesFactoryImplTest {
 		val caught = try {
 			shapeFactory.createCircle(radius)
 			false
-		} catch(exc: IllegalArgumentException) {
+		} catch (exc: IllegalArgumentException) {
 			true
 		}
 		Assert.assertEquals(true, caught)
@@ -24,7 +24,7 @@ class ShapesFactoryImplTest {
 		val caught = try {
 			shapeFactory.createSquare(side)
 			false
-		} catch(exc: IllegalArgumentException) {
+		} catch (exc: IllegalArgumentException) {
 			true
 		}
 		Assert.assertEquals(true, caught)
@@ -39,7 +39,7 @@ class ShapesFactoryImplTest {
 		val caught = try {
 			shapeFactory.createRectangle(width, height)
 			false
-		} catch(exc: IllegalArgumentException) {
+		} catch (exc: IllegalArgumentException) {
 			true
 		}
 		Assert.assertEquals(true, caught)
@@ -54,7 +54,7 @@ class ShapesFactoryImplTest {
 		var caught = try {
 			shapeFactory.createTriangle(left, right, base)
 			false
-		} catch(exc: IllegalArgumentException) {
+		} catch (exc: IllegalArgumentException) {
 			true
 		}
 		Assert.assertEquals(true, caught)
@@ -66,7 +66,7 @@ class ShapesFactoryImplTest {
 		caught = try {
 			shapeFactory.createTriangle(left, right, base)
 			false
-		} catch(exc: IllegalArgumentException) {
+		} catch (exc: IllegalArgumentException) {
 			true
 		}
 		Assert.assertEquals(true, caught)
