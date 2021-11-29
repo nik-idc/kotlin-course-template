@@ -4,7 +4,7 @@ import kotlin.math.PI
 import kotlin.math.sqrt
 
 class ShapesTest {
-
+	
 	private val doubleCompDelta = 0.00001
 	
 	@Test
