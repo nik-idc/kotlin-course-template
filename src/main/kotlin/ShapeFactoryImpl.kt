@@ -49,14 +49,9 @@ class ShapeFactoryImpl : ShapeFactory {
 	}
 	
 	override fun createRandomTriangle(): Triangle {
-		var left = 0.0
-		var right = 0.0
-		var base = 0.0
-		while (left >= right + base || right >= left + base || base >= right + left) {
-			left = Random.nextDouble(0.0, maxSize)
-			right = Random.nextDouble(0.0, maxSize)
-			base = Random.nextDouble(0.0, maxSize)
-		}
+		val left = Random.nextDouble(minSize, maxSize)
+		val right = Random.nextDouble(minSize, maxSize)
+		val base = Random.nextDouble(minSize, left + right)
 		return Triangle(left, right, base)
 	}
 	
@@ -68,7 +63,7 @@ class ShapeFactoryImpl : ShapeFactory {
 			(3) -> createRandomRectangle()
 			(4) -> createRandomTriangle()
 			// Not exactly sure what would be the appropriate type of exception here
-			else -> throw IllegalArgumentException("Something went wrong while creating a random number")
+			else -> throw IllegalStateException("Something went wrong while creating a random number")
 		}
 	}
 }
