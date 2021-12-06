@@ -1,13 +1,10 @@
 import kotlin.math.PI
 import kotlin.math.sqrt
 
-class Circle(newRadius: Double) : Shape {
-	private val r: Double
+class Circle(val r: Double) : Shape {
 	
 	init {
-		if (newRadius > 0.0)
-			r = newRadius
-		else
+		if (r <= 0.0)
 			throw IllegalArgumentException("Circle radius cannot be less than 0!")
 	}
 	
@@ -20,13 +17,9 @@ class Circle(newRadius: Double) : Shape {
 	}
 }
 
-class Square(newSide: Double) : Shape {
-	private val side: Double
-	
+class Square(val side: Double) : Shape {
 	init {
-		if (newSide > 0.0)
-			side = newSide
-		else
+		if (side <= 0.0)
 			throw IllegalArgumentException("Square side cannot be less than 0!")
 	}
 	
@@ -39,15 +32,9 @@ class Square(newSide: Double) : Shape {
 	}
 }
 
-class Rectangle(newHeight: Double, newWidth: Double) : Shape {
-	private val width: Double
-	private val height: Double
-	
+class Rectangle(val width: Double, val height: Double) : Shape {
 	init {
-		if (newWidth > 0.0 && newHeight > 0.0) {
-			width = newWidth
-			height = newHeight
-		} else
+		if (width <= 0.0 || height <= 0.0)
 			throw IllegalArgumentException("Rectangle sides cannot be less than 0!")
 	}
 	
@@ -60,24 +47,15 @@ class Rectangle(newHeight: Double, newWidth: Double) : Shape {
 	}
 }
 
-class Triangle(newLeft: Double, newRight: Double, newBase: Double) : Shape {
-	private val left: Double
-	private val right: Double
-	private val base: Double
-	
+class Triangle(val left: Double, val right: Double, val base: Double) : Shape {
 	init {
-		if (newLeft >= newRight + newBase ||
-			newRight >= newLeft + newBase ||
-			newBase >= newRight + newLeft
-		) {
-			throw IllegalArgumentException("Each side of a triangle must be less than the sum of two other sides!")
-		} else if (newLeft <= 0.0 || newRight <= 0.0 || newBase <= 0.0)
+		if (left <= 0.0 || right <= 0.0 || base <= 0.0)
 			throw IllegalArgumentException("Triangle sides cannot be less than 0!")
-		else {
-			left = newLeft
-			right = newRight
-			base = newBase
-		}
+		else if (left >= right + base ||
+			right >= left + base ||
+			base >= right + left
+		)
+			throw IllegalArgumentException("Each side of a triangle must be less than the sum of two other sides!")
 	}
 	
 	override fun calcArea(): Double {
@@ -89,3 +67,4 @@ class Triangle(newLeft: Double, newRight: Double, newBase: Double) : Shape {
 		return left + right + base
 	}
 }
+
