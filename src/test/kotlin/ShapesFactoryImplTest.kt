@@ -66,7 +66,7 @@ class ShapesFactoryImplTest {
 		caught = try {
 			shapeFactory.createTriangle(left, right, base)
 			false
-		} catch (exc: IllegalArgumentException) {
+		} catch (exc: IllegalStateException) {
 			true
 		}
 		Assert.assertEquals(true, caught)
