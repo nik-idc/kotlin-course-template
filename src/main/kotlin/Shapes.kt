@@ -1,7 +1,7 @@
 import kotlin.math.PI
 import kotlin.math.sqrt
 
-class Circle(val r: Double) : Shape {
+data class Circle(val r: Double) : Shape {
 	
 	init {
 		if (r <= 0.0)
@@ -17,7 +17,7 @@ class Circle(val r: Double) : Shape {
 	}
 }
 
-class Square(val side: Double) : Shape {
+data class Square(val side: Double) : Shape {
 	init {
 		if (side <= 0.0)
 			throw IllegalArgumentException("Square side cannot be less than 0!")
@@ -32,7 +32,7 @@ class Square(val side: Double) : Shape {
 	}
 }
 
-class Rectangle(val width: Double, val height: Double) : Shape {
+data data class Rectangle(val width: Double, val height: Double) : Shape {
 	init {
 		if (width <= 0.0 || height <= 0.0)
 			throw IllegalArgumentException("Rectangle sides cannot be less than 0!")
@@ -47,7 +47,7 @@ class Rectangle(val width: Double, val height: Double) : Shape {
 	}
 }
 
-class Triangle(val left: Double, val right: Double, val base: Double) : Shape {
+data class Triangle(val left: Double, val right: Double, val base: Double) : Shape {
 	init {
 		if (left <= 0.0 || right <= 0.0 || base <= 0.0)
 			throw IllegalArgumentException("Triangle sides cannot be less than 0!")
