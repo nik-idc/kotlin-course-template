@@ -84,6 +84,53 @@ fun lab4Demo() {
 	println()
 }
 
+fun printListOfShapes(shapes: List<Shape>) {
+	println()
+	for (shape in shapes) {
+		println(
+			"${shape.javaClass.toString().substringAfter("class ")} with area ${shape.calcArea()}" +
+					" and perimeter ${shape.calcPerimeter()}"
+		)
+	}
+}
+
+fun lab6Demo() {
+	val sf = ShapeFactoryImpl()
+	
+	val smallShapes = ShapeCollector<Shape>()
+	smallShapes.addAll(
+		listOf(
+			sf.createSquare(1.0),
+			sf.createSquare(1.4),
+			sf.createRectangle(1.0, 2.0),
+			sf.createRectangle(1.2, 1.5),
+			sf.createTriangle(3.0, 4.0, 5.0),
+			sf.createCircle(PI)
+		)
+	)
+	
+	val smallShapesByArea = smallShapes.getAllSorted(ShapeComparators.CompareByAreaAsc)
+	val smallShapesOnlyRectangles = smallShapes.getAllByClass(Rectangle::class.java)
+	printListOfShapes(smallShapesByArea)
+	printListOfShapes(smallShapesOnlyRectangles)
+	
+	val bigShapes = ShapeCollector<Shape>()
+	bigShapes.addAll(
+		listOf(
+			sf.createSquare(230.0),
+			sf.createSquare(112.4),
+			sf.createRectangle(423.123, 212.233),
+			sf.createRectangle(500.22, 234.2123),
+			sf.createTriangle(600.0, 600.0, 600.0),
+		)
+	)
+	
+	val bigShapesByPerimeter = bigShapes.getAllSorted(ShapeComparators.CompareByPerimeterDesc)
+	val bigShapesOnlyRectangles = bigShapes.getAllByClass(Rectangle::class.java)
+	printListOfShapes(bigShapesByPerimeter)
+	printListOfShapes(bigShapesOnlyRectangles)
+}
+
 fun main() {
-	lab4Demo()
+	lab6Demo()
 }
