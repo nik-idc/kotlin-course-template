@@ -18,8 +18,8 @@ class ShapesSerializer {
 		}
 	}
 	
-	fun encodeShape(shape: Shape) : String = json.encodeToString(shape)
-	fun decodeShape(shapeStr: String) : Shape = json.decodeFromString(shapeStr)
+	fun encodeShape(shape: Shape): String = json.encodeToString(shape)
+	fun decodeShape(shapeStr: String): Shape = json.decodeFromString(shapeStr)
 }
 
 class ShapeFiles {
@@ -28,27 +28,27 @@ class ShapeFiles {
 	fun encodeShapesToFile(shapes: List<Shape>, path: String) {
 		try {
 			var res = ""
-			for(shape in shapes)
+			for (shape in shapes)
 				res += serializer.encodeShape(shape)
 			File(path).writeText(res)
-		} catch(exc: IOException) {
+		} catch (exc: IOException) {
 			println("Could not write into file: ${exc.message}")
 		}
 	}
 	
-	fun decodeShapesFromFile(path: String) : List<Shape> {
+	fun decodeShapesFromFile(path: String): List<Shape> {
 		val res = mutableListOf<Shape>()
 		try {
 			var text = File(path).readText()
-			while(text.isNotEmpty()) {
+			while (text.isNotEmpty()) {
 				// Take substring before '}', while filtering out all the '\r\n' etc.
 				val curObj = text.substringBefore('}').filter { char -> (!" \r\n".contains(char)) } + '}'
 				res.add(serializer.decodeShape(curObj)) // Decode and add
 				text = text.substringAfter('}') // Update text from file
 			}
-		} catch(exc: IllegalArgumentException) {
+		} catch (exc: IllegalArgumentException) {
 			println("It appears a JSON object was in incorrect format: ${exc.message}")
-		} catch(exc: IOException) {
+		} catch (exc: IOException) {
 			println("Could not read from file: ${exc.message}")
 		}
 		return res
