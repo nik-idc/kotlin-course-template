@@ -1,15 +1,16 @@
+import lab5.*
 import org.junit.Assert
 import org.junit.Test
 
 class LibraryTest {
-	private val john = User("John", "", "Smith")
-	private val cathy = User("Cathy", "", "Jackson")
-	private val david = User("David", "Michael", "Philips")
-	private val dan = User("Daniel", "George", "Williams")
+	private val john = User("John", "Smith")
+	private val cathy = User("Cathy", "Jackson")
+	private val david = User("David", "Philips", "Michael")
+	private val dan = User("Daniel", "Williams", "George")
 	
-	private val initialUsers = mutableListOf(john, cathy, david, dan)
+	private val initialUsers = setOf(john, cathy, david, dan)
 	
-	private val initialBooks = mutableMapOf(
+	private val initialBooks = mapOf(
 		Book(
 			"Harry Potter & The Philosopher's Stone",
 			listOf(Author("Joanne", "Kathleen ", "Rowling")),
@@ -175,6 +176,28 @@ class LibraryTest {
 		// Testing when book is NOT in the library
 		val caught = try {
 			library.takeBook(john, bookNotInLibrary)
+			false
+		} catch (exc: IllegalArgumentException) {
+			true
+		}
+		Assert.assertEquals(true, caught)
+	}
+	
+	@Test
+	fun testRegisterUnregisterUser() {
+		// Test register user
+		var caught = try {
+			library.registerUser(dan)
+			false
+		} catch (exc: IllegalArgumentException) {
+			true
+		}
+		Assert.assertEquals(true, caught)
+		
+		// Test unregister user
+		val alex = User("Alex", "James")
+		caught = try {
+			library.unregisterUser(alex)
 			false
 		} catch (exc: IllegalArgumentException) {
 			true
