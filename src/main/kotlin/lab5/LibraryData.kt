@@ -25,7 +25,7 @@ sealed class Status {
 }
 
 
-data class Author(val firstName: String, val middleName: String, val lastName: String) {
+data class Author(val firstName: String, val lastName: String = "", val middleName: String = "") {
 	init {
 		if (firstName.isEmpty())
 			throw IllegalArgumentException("An author must have a first name!")
@@ -37,7 +37,7 @@ data class Author(val firstName: String, val middleName: String, val lastName: S
 }
 
 
-data class User(val firstName: String, val middleName: String, val lastName: String) {
+data class User(val firstName: String, val lastName: String = "", val middleName: String = "") {
 	init {
 		if (firstName.isEmpty())
 			throw IllegalArgumentException("An author must have a first name!")
