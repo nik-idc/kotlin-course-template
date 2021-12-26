@@ -1,3 +1,4 @@
+import lab7.ShapesSerializer
 import org.junit.Assert
 import org.junit.Test
 
@@ -7,6 +8,7 @@ class ShapeSerializationTest {
 	
 	@Test
 	fun testEncode() {
+		// Test encode one shape
 		val circle = sf.createCircle(1.0)
 		val expectedEncodedCircle = """
 			{
@@ -16,76 +18,81 @@ class ShapeSerializationTest {
 		""".trimIndent()
 		Assert.assertEquals(expectedEncodedCircle, shapesSerializer.encodeShape(circle))
 		
-		val square = sf.createSquare(1.0)
+		// Test encode multiple shapes
+		val shapes = listOf(
+			sf.createCircle(1.0),
+			sf.createSquare(1.0),
+			sf.createRectangle(1.0, 2.0),
+			sf.createTriangle(3.0, 4.0, 5.0)
+		)
 		val expectedEncodedSquare = """
-			{
-			    "type": "Square",
-			    "side": 1.0
-			}
+			[
+			    {
+			        "type": "Circle",
+			        "r": 1.0
+			    },
+			    {
+			        "type": "Square",
+			        "side": 1.0
+			    },
+			    {
+			        "type": "Rectangle",
+			        "width": 1.0,
+			        "height": 2.0
+			    },
+			    {
+			        "type": "Triangle",
+			        "left": 3.0,
+			        "right": 4.0,
+			        "base": 5.0
+			    }
+			]
 		""".trimIndent()
-		Assert.assertEquals(expectedEncodedSquare, shapesSerializer.encodeShape(square))
-		
-		val rectangle = sf.createRectangle(2.0, 3.0)
-		val expectedEncodedRectangle = """
-			{
-			    "type": "Rectangle",
-			    "width": 2.0,
-			    "height": 3.0
-			}
-		""".trimIndent()
-		Assert.assertEquals(expectedEncodedRectangle, shapesSerializer.encodeShape(rectangle))
-		
-		val triangle = sf.createTriangle(3.0, 4.0, 5.0)
-		val expectedEncodedTriangle = """
-			{
-			    "type": "Triangle",
-			    "left": 3.0,
-			    "right": 4.0,
-			    "base": 5.0
-			}
-		""".trimIndent()
-		Assert.assertEquals(expectedEncodedTriangle, shapesSerializer.encodeShape(triangle))
+		Assert.assertEquals(expectedEncodedSquare, shapesSerializer.encodeShapes(shapes))
 	}
 	
 	@Test
 	fun testDecode() {
+		// Test decode one shape
+		val circle = sf.createCircle(1.0)
 		val encodedCircle = """
 			{
 			    "type": "Circle",
 			    "r": 1.0
 			}
 		""".trimIndent()
-		val expectedCircle = sf.createCircle(1.0)
-		Assert.assertEquals(shapesSerializer.decodeShape(encodedCircle), expectedCircle)
+		Assert.assertEquals(shapesSerializer.decodeShape(encodedCircle), circle)
 		
-		val encodedSquare = """
-			{
-			    "type": "Square",
-			    "side": 1.0
-			}
+		// Test decode multiple shapes
+		val shapes = listOf(
+			sf.createCircle(1.0),
+			sf.createSquare(1.0),
+			sf.createRectangle(1.0, 2.0),
+			sf.createTriangle(3.0, 4.0, 5.0)
+		)
+		val encodedShapes = """
+			[
+			    {
+			        "type": "Circle",
+			        "r": 1.0
+			    },
+			    {
+			        "type": "Square",
+			        "side": 1.0
+			    },
+			    {
+			        "type": "Rectangle",
+			        "width": 1.0,
+			        "height": 2.0
+			    },
+			    {
+			        "type": "Triangle",
+			        "left": 3.0,
+			        "right": 4.0,
+			        "base": 5.0
+			    }
+			]
 		""".trimIndent()
-		val expectedSquare = sf.createSquare(1.0)
-		Assert.assertEquals(shapesSerializer.decodeShape(encodedSquare), expectedSquare)
-		
-		val encodedRectangle = """
-			{
-			    "type": "Rectangle",
-			    "width": 2.0,
-			    "height": 3.0
-			}
-		""".trimIndent()
-		val expectedRectangle = sf.createRectangle(2.0, 3.0)
-		Assert.assertEquals(shapesSerializer.decodeShape(encodedRectangle), expectedRectangle)
-		
-		val encodedTriangle = """
-			{
-			    "type": "Triangle",
-			    "left": 3.0,
-			    "right": 4.0,
-			    "base": 5.0
-			}
-		""".trimIndent()
-		val expectedTriangle = sf.createTriangle(3.0, 4.0, 5.0)
-		Assert.assertEquals(shapesSerializer.decodeShape(encodedTriangle), expectedTriangle)
+		Assert.assertEquals(shapesSerializer.decodeShapes(encodedShapes), shapes)
 	}
 }
