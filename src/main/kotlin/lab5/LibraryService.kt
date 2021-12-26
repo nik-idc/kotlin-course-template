@@ -1,3 +1,5 @@
+package lab5
+
 interface LibraryService {
 	fun findBooks(
 		substring: String? = null,
@@ -17,8 +19,9 @@ interface LibraryService {
 	fun addBook(book: Book, status: Status = Status.Available)
 	
 	fun registerUser(user: User)
-	fun registerUser(firstName: String, middleName: String, lastName: String)
+	fun registerUser(firstName: String, lastName: String, middleName: String)
 	fun unregisterUser(user: User)
+	fun unregisterUser(firstName: String, lastName: String, middleName: String)
 	
 	fun takeBook(user: User, book: Book)
 	fun returnBook(book: Book)
