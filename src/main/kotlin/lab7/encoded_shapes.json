@@ -1,30 +1,36 @@
-{
-    "type": "Circle",
-    "r": 3.213
-}{
-    "type": "Square",
-    "side": 4.0
-}{
-    "type": "Rectangle",
-    "width": 1.0,
-    "height": 2.0
-}{
-    "type": "Triangle",
-    "left": 3.0,
-    "right": 4.0,
-    "base": 5.0
-}{
-    "type": "Triangle",
-    "left": 959.9793177197075,
-    "right": 852.7537892480651,
-    "base": 466.83251002101633
-}{
-    "type": "Rectangle",
-    "width": 548.2144280449955,
-    "height": 421.28819082393994
-}{
-    "type": "Triangle",
-    "left": 592.5465437386151,
-    "right": 863.7844814857249,
-    "base": 441.3899212641344
-}
+[
+    {
+        "type": "Circle",
+        "r": 1.0
+    },
+    {
+        "type": "Square",
+        "side": 1.0
+    },
+    {
+        "type": "Rectangle",
+        "width": 1.0,
+        "height": 2.0
+    },
+    {
+        "type": "Triangle",
+        "left": 3.0,
+        "right": 4.0,
+        "base": 5.0
+    },
+    {
+        "type": "Triangle",
+        "left": 485.0527639920133,
+        "right": 625.3387663862209,
+        "base": 304.59472199208005
+    },
+    {
+        "type": "Rectangle",
+        "width": 828.5075421609789,
+        "height": 419.0462003792269
+    },
+    {
+        "type": "Circle",
+        "r": 862.8594086859193
+    }
+]
