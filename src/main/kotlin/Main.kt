@@ -148,8 +148,9 @@ fun lab7Demo() {
 			sf.createRandomShape()
 		)
 	)
+	val serializer = ShapesSerializer()
 	// Encode updated shapes list to different file
-	shapesFile.encodeShapesToFile(decodedShapes, path + "encoded_shapes.json")
+	shapesFile.encodeShapesToFile(serializer.encodeShapes(decodedShapes), path + "encoded_shapes.json")
 }
 
 fun main() {
