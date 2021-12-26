@@ -1,19 +1,21 @@
-{
- "type": "Circle",
- "r": 3.213
-}
-{
- "type": "Square",
- "side": 4.0
-}
-{
- "type": "Rectangle",
- "width": 1.0,
- "height": 2.0
-}
-{
- "type": "Triangle",
- "left": 3.0,
- "right": 4.0,
- "base": 5.0
-}
+[
+    {
+      "type": "Circle",
+      "r": 1.0
+    },
+    {
+      "type": "Square",
+      "side": 1.0
+    },
+    {
+      "type": "Rectangle",
+      "width": 1.0,
+      "height": 2.0
+    },
+    {
+      "type": "Triangle",
+      "left": 3.0,
+      "right": 4.0,
+      "base": 5.0
+    }
+]
