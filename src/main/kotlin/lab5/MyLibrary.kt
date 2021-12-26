@@ -1,10 +1,18 @@
+package lab5
+
 const val maxBooksPerUser = 3
 
 class MyLibrary(
-	private val books: MutableMap<Book, Status>,
-	private val users: MutableList<User>
+	initialBooks: Map<Book, Status>,
+	initialUsers: Set<User>
 ) : LibraryService {
+	private val books = mutableMapOf<Book, Status>()
+	private val users = mutableSetOf<User>()
 	
+	init {
+		books.plusAssign(initialBooks)
+		users.plusAssign(initialUsers)
+	}
 	
 	override fun findBooks(
 		substring: String?,
@@ -46,15 +54,21 @@ class MyLibrary(
 	}
 	
 	override fun registerUser(user: User) {
-		users.add(user)
+		if(!users.add(user))
+			throw IllegalArgumentException("User $user is already registered!")
 	}
 	
-	override fun registerUser(firstName: String, middleName: String, lastName: String) {
-		users.add(User(firstName, middleName, lastName))
+	override fun registerUser(firstName: String, lastName: String, middleName: String) {
+		registerUser(User(firstName, middleName, lastName))
 	}
 	
 	override fun unregisterUser(user: User) {
-		users.remove(user)
+		if(!users.remove(user))
+			throw IllegalArgumentException("User $user is already registered!")
+	}
+	
+	override fun unregisterUser(firstName: String, lastName: String, middleName: String) {
+		unregisterUser(User(firstName, lastName, middleName))
 	}
 	
 	override fun takeBook(user: User, book: Book) {
