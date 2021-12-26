@@ -1,3 +1,5 @@
+package lab5
+
 enum class Genre {
 	ADVENTURE,
 	ACTION,
