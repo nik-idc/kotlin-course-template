@@ -52,7 +52,7 @@ class ShapeFactoryImpl : ShapeFactory {
 	override fun createRandomTriangle(): Triangle {
 		val left = Random.nextDouble(minSize, maxSize)
 		val right = Random.nextDouble(minSize, maxSize)
-		val base = Random.nextDouble(minSize, left + right)
+		val base = Random.nextDouble(max((left - right),(right - left)), left + right)
 		return Triangle(left, right, base)
 	}
 	
